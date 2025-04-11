@@ -1,0 +1,13 @@
+# Sanal ortam
+.venv/
+
+# PyCharm
+.idea/
+
+# Derleme kalıntıları
+__pycache__/
+*.py[cod]
+*.log
+
+# Sistem dosyaları
+.DS_Store
