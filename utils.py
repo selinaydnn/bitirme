@@ -32,10 +32,18 @@ def add_pdf_to_chroma_db(pdf_path, chroma_db, chunk_size=512, chunk_overlap=50, 
         # Parçaları küçük batch'lere ayır
         for i in range(0, len(chunks), max_batch_size):
             batch = chunks[i:i + max_batch_size]
-            chroma_db.add_texts(batch)
+
+            # Burada upsert işlemi ile veri ekliyoruz
+            chroma_db._collection.upsert(
+                documents=batch,
+                metadatas=[{}]*len(batch),  # Metadata, boş bırakılabilir
+                ids=[str(i) for i in range(i, i+len(batch))]  # Her bir parça için ID atıyoruz
+            )
+
             print(f"{len(batch)} chunk başarıyla ChromaDB'ye eklendi.")
 
         print(f"Güncellenmiş ChromaDB veri sayısı: {chroma_db._collection.count()}")
+
 
 
 def create_embeddings():
@@ -101,8 +109,11 @@ def create_prompt_template():
 
 def create_qa_chain(chroma_db, llm, prompt_template):
     retriever = chroma_db.as_retriever(
-        search_type="mmr",
-        search_kwargs={"k": 5},
+        search_type="hnsw",
+        search_kwargs={"k": 5,
+                       "ef_construction": 100,
+                       "ef_search": 50
+                       },
         embedding_function=OllamaEmbeddings(model="bge-m3:latest")
     )
 
