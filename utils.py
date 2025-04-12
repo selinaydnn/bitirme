@@ -33,11 +33,14 @@ def add_pdf_to_chroma_db(pdf_path, chroma_db, chunk_size=512, chunk_overlap=50, 
         for i in range(0, len(chunks), max_batch_size):
             batch = chunks[i:i + max_batch_size]
 
+            # Metadata'yı oluşturun (örneğin her chunk'a boş bir metadata atıyoruz)
+            metadata = [{"source": f"chunk_{i}"}] * len(batch)  # metadata olarak örnek bir bilgi ekleniyor
+
             # Burada upsert işlemi ile veri ekliyoruz
             chroma_db._collection.upsert(
                 documents=batch,
-                metadatas=[{}]*len(batch),  # Metadata, boş bırakılabilir
-                ids=[str(i) for i in range(i, i+len(batch))]  # Her bir parça için ID atıyoruz
+                metadatas=metadata,  # Metadata'yı ekliyoruz
+                ids=[str(i) for i in range(i, i + len(batch))]  # Her bir parça için ID atıyoruz
             )
 
             print(f"{len(batch)} chunk başarıyla ChromaDB'ye eklendi.")
