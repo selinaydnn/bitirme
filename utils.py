@@ -45,7 +45,6 @@ def add_pdf_to_chroma_db(pdf_path, chroma_db, chunk_size=512, chunk_overlap=50, 
         print(f"Güncellenmiş ChromaDB veri sayısı: {chroma_db._collection.count()}")
 
 
-
 def create_embeddings():
     return OllamaEmbeddings(model="bge-m3:latest")
 
