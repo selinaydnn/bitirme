@@ -21,22 +21,21 @@ def read_pdf_and_create_chunks(pdf_path, chunk_size=512, chunk_overlap=50):
     return text_splitter.split_text(text)
 
 
-def add_pdf_to_chroma_db(pdf_path, chroma_db, chunk_size=512, chunk_overlap=50):
-
+def add_pdf_to_chroma_db(pdf_path, chroma_db, chunk_size=512, chunk_overlap=50, max_batch_size=166):
     existing_data_count = chroma_db._collection.count()
     print(f"Mevcut ChromaDB Kayıt Sayısı: {existing_data_count}")
-
 
     chunks = read_pdf_and_create_chunks(pdf_path, chunk_size, chunk_overlap)
     print(f"{pdf_path} içinden {len(chunks)} adet parça üretildi!")
 
     if len(chunks) > 0:
+        # Parçaları küçük batch'lere ayır
+        for i in range(0, len(chunks), max_batch_size):
+            batch = chunks[i:i + max_batch_size]
+            chroma_db.add_texts(batch)
+            print(f"{len(batch)} chunk başarıyla ChromaDB'ye eklendi.")
 
-        chroma_db.add_texts(chunks)
-
-        print(f"{len(chunks)} chunk başarıyla ChromaDB'ye eklendi.")
         print(f"Güncellenmiş ChromaDB veri sayısı: {chroma_db._collection.count()}")
-
 
 
 def create_embeddings():
