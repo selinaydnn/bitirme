@@ -33,7 +33,8 @@ if st.button("Yanıt Al"):
         try:
 
             retriever = chroma_db.as_retriever(search_type="mmr", search_kwargs={"k": 5})
-            relevant_docs = retriever.get_relevant_documents(query)
+            relevant_docs = retriever.invoke(query)
+
 
 
             context = " ".join([doc.page_content for doc in relevant_docs])
