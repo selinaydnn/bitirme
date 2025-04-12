@@ -101,10 +101,8 @@ def create_prompt_template():
 
 def create_qa_chain(chroma_db, llm, prompt_template):
     retriever = chroma_db.as_retriever(
-        search_type="hnsw",
-        search_kwargs={"k": 5,
-                       "ef_construction": 100,
-                       "ef_search": 50
+        search_type="mmr",
+        search_kwargs={"k": 3,
                        },
         embedding_function=OllamaEmbeddings(model="bge-m3:latest")
     )
@@ -120,7 +118,7 @@ def create_qa_chain(chroma_db, llm, prompt_template):
 def generate_response_with_context(query, qa, chroma_db):
     retriever = chroma_db.as_retriever(
         search_type="mmr",
-        search_kwargs={"k": 5},
+        search_kwargs={"k": 3},
         embedding_function=create_embeddings()
     )
 
