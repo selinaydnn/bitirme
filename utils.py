@@ -5,7 +5,7 @@ from langchain.prompts import PromptTemplate
 import os
 from langchain_ollama import OllamaEmbeddings, ChatOllama
 from langchain_community.vectorstores import Chroma
-
+from langchain_chroma import Chroma
 
 def read_pdf_and_create_chunks(pdf_path, chunk_size=512, chunk_overlap=50):
     reader = PdfReader(pdf_path)
