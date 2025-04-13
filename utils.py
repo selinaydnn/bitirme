@@ -63,7 +63,7 @@ test_chroma_db()
 
 def load_llm():
     return ChatOllama(
-        model="llama3.2",
+        model="llama3.3",
         temperature=0.4,
         max_tokens=524
     )
